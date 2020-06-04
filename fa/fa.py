@@ -100,7 +100,7 @@ def print_ressult(steps, word):
         state = step[1].state_number
         print("current state: q{}".format(state))
         print(word)
-        print(" "*(index - 1) + "\3")
+        print(" "*(index - 1) + ".")
 
 main()
 

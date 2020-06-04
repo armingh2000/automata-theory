@@ -33,7 +33,7 @@ class fa:
             for letter in self.letters:
                 state.transitions[letter] = []
 
-    def add_transition(self, start_state, end_statem, letter):
+    def add_transition(self, start_state, end_state, letter):
         start_state.add_transition(end_state, letter)
 
     def word_check(self, word):
@@ -70,7 +70,7 @@ class fa:
 
 
 def main():
-    letters = input("Enter FA letters: ").split()
+    letters = input("Enter FA letters: ").split() + ['-']
     n_states = int(input("Enter number of states: "))
     final_states = map(int, input("Enter final states: ").split())
     trap_states = map(int, input("Enter trap states: ").split())
@@ -81,26 +81,27 @@ def main():
 
     for i in range(n_transition):
         temp = input("Enter transition: ").split()
-        new_fa.add_transition(int(temp[0]), int(temp[1]), temp[2])
+        new_fa.add_transition(new_fa.states[int(temp[0])], new_fa.states[int(temp[1])], temp[2])
     
     loop = True
     while loop:
         word = input("Enter a word: ")
         result = new_fa.word_check(word)
-        if result[1]:
+        if result != False:
             print("This word is in this fa's language")
-            print_result(result[0], word)
+            result.reverse()
+            print_result(result, word)
         else:
             print("This word is NOT in this fa's language")
         loop = False if input("Do you want to continue?(y, n) : ") == 'n' else True
 
-def print_ressult(steps, word):
-    for step in steps.reverse():
-        index = steps[0]
+def print_result(steps, word):
+    for step in steps:
+        index = step[0]
         state = step[1].state_number
         print("current state: q{}".format(state))
         print(word)
-        print(" "*(index - 1) + ".")
+        print((" "*(index)) + ".")
 
 main()
 

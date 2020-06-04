@@ -72,11 +72,11 @@ class fa:
 def main():
     letters = input("Enter FA letters: ").split() + ['-']
     n_states = int(input("Enter number of states: "))
-    final_states = map(int, input("Enter final states: ").split())
-    trap_states = map(int, input("Enter trap states: ").split())
+    final_states = list(map(int, input("Enter final states: ").split()))
+    trap_states = list(map(int, input("Enter trap states: ").split()))
     new_fa = fa(n_states, letters, final_states, trap_states)
     n_transition = int(input("Enter number of transitions (each transition has 'one' letter): "))
-    print("use - in lambda transitino")
+    print("use - in lambda transition")
     print("Enter transitions in format: 'start_state end_state letter")
 
     for i in range(n_transition):
@@ -84,6 +84,11 @@ def main():
         new_fa.add_transition(new_fa.states[int(temp[0])], new_fa.states[int(temp[1])], temp[2])
     
     loop = True
+    #for state in new_fa.states:
+    #    print(state.state_number)
+    #    print(state.is_final)
+    #print(final_states)
+    #return 
     while loop:
         word = input("Enter a word: ")
         result = new_fa.word_check(word)

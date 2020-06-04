@@ -69,3 +69,38 @@ class fa:
 
 
 
+def main():
+    letters = input("Enter FA letters: ").split()
+    n_states = int(input("Enter number of states: "))
+    final_states = map(int, input("Enter final states: ").split())
+    trap_states = map(int, input("Enter trap states: ").split())
+    new_fa = fa(n_states, letters, final_states, trap_states)
+    n_transition = int(input("Enter number of transitions (each transition has 'one' letter): "))
+    print("use - in lambda transitino")
+    print("Enter transitions in format: 'start_state end_state letter")
+
+    for i in range(n_transition):
+        temp = input("Enter transition: ").split()
+        new_fa.add_transition(int(temp[0]), int(temp[1]), temp[2])
+    
+    loop = True
+    while loop:
+        word = input("Enter a word: ")
+        result = new_fa.word_check(word)
+        if result[1]:
+            print("This word is in this fa's language")
+            print_result(result[0], word)
+        else:
+            print("This word is NOT in this fa's language")
+        loop = False if input("Do you want to continue?(y, n) : ") == 'n' else True
+
+def print_ressult(steps, word):
+    for step in steps.reverse():
+        index = steps[0]
+        state = step[1].state_number
+        print("current state: q{}".format(state))
+        print(word)
+        print(" "*(index - 1) + "\3")
+
+main()
+

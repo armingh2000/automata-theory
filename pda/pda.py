@@ -111,6 +111,47 @@ class pda:
             return [], False
 
 
+def main():
+    letters = input("Enter PDA letters: ")
+    n_states = int(input("Enter number of states: "))
+    final_states = list(map(int, input("Enter final states: ").split()))
+    trap_states = list(map(int, input("Enter trap states(trap state is a state that has all letter transitions forwarding to itself: ").split()))
+    stack_variables = input("Enter stack variables: ")
+    new_pda = pda(n_states, letters, final_states, trap_states, stack_variables)
+    n_transitions = int(input("Enter number of transitions"))
+    print("use - in lambda transition")
+    print("Enter transitions in format: 'start_state end_state letter stack_pop_letter stack_push_letter")
+    
+    for i in range(n_transitions):
+        temp = input("Enter transition: ").split()
+        new_pda.add_transition(self.states[int(temp[0])], self.states[int(temp[1])], temp[2], temp[3], temp[4])
+
+    loop = True
+
+    while loop:
+        word = input("Enter a word: ")
+        result = new_pda.word_check(word)
+        if result == False:
+            print("This word is NOT in this PDA's language")
+        else:
+            print("This word is in this PDA's language")
+            result.reverse()
+            print_result(result, word)
+        loop = False if input("Do you want to continue?(y, n): ") == 'n' else True
+
+
+def print_result(steps, word):
+    for step in steps:
+        index = step[0]
+        state = step[1]
+        stack = step[2]
+        print("current state: q{}".format(state))
+        print("stack: {}".format(stack))
+        print(word)
+        print((" "*(index)) + ".")
+
+
+main()
 
 
 

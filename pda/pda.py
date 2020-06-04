@@ -12,4 +12,24 @@ class pda_state:
         self.transitions[letter].append((state2, stack_pop_letter, stack_push_letter))
 
     
+class stack:
+
+
+    def __init__(self, stack_variables):
+        self.stack = []
+        self.stack_variables = stack_variables
+        self.stack.append("$")
+
+    def push(self, letter):
+        if letter != '-':
+            self.stack.append(letter)
+
+    def pop(self, letter):
+        if letter != '-':
+            if letter != self.stack[-1]:
+                self.stack.pop(-1)
+
+
+
+
 

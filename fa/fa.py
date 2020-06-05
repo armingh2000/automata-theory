@@ -44,6 +44,9 @@ class fa:
         if current_index == len(word):
             if current_state.is_final:
                 return [(current_index, current_state)], True
+            for state in current_state.transitions['-']:
+                if state.is_final:
+                    return [(current_index, state)], True
             else: return [], False
 
         if word[current_index] in self.letters:
@@ -73,12 +76,11 @@ def main():
     letters = input("Enter FA letters: ").split() + ['-']
     n_states = int(input("Enter number of states: "))
     final_states = list(map(int, input("Enter final states: ").split()))
-    trap_states = list(map(int, input("Enter trap states: ").split()))
+    trap_states = list(map(int, input("Enter trap states(trap state is a state that has all letter transitions forwarding to itself): ").split()))
     new_fa = fa(n_states, letters, final_states, trap_states)
     n_transition = int(input("Enter number of transitions (each transition has 'one' letter): "))
     print("use - in lambda transition")
     print("Enter transitions in format: 'start_state end_state letter")
-
     for i in range(n_transition):
         temp = input("Enter transition: ").split()
         new_fa.add_transition(new_fa.states[int(temp[0])], new_fa.states[int(temp[1])], temp[2])
@@ -97,7 +99,7 @@ def main():
             result.reverse()
             print_result(result, word)
         else:
-            print("This word is NOT in this fa's language")
+            print("This word is NOT in this FA's language")
         loop = False if input("Do you want to continue?(y, n) : ") == 'n' else True
 
 def print_result(steps, word):

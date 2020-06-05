@@ -81,8 +81,13 @@ class pda:
             if current_state.is_final:
                 return [(current_index, current_state, self.stack.show())], True
             for transition in current_state.transitions['-']:
-                if transition[0].is_final and transition[1] == self.stack.stack[-1]:
-                    return [(current_index, transition[0], self.stack.show())], True
+                if transition[0] != current_state:
+                    if self.performable_transition(transition):
+                        self.perform_transition(transition)
+                        res = self.walk(word, transition[0], current_index)
+                        self.undo_transition(transition)
+                        if res[1]:
+                            return res[0] + [(current_index, current_state, self.stack.show())], True
             return [], False
 
         if word[current_index] in self.letters:
@@ -152,7 +157,7 @@ def main():
 def print_result(steps, word):
     for step in steps:
         index = step[0]
-        state = step[1]
+        state = step[1].state_number
         stack = step[2]
         print("current state: q{}".format(state))
         print("stack: {}".format(stack))

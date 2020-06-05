@@ -44,6 +44,9 @@ class fa:
         if current_index == len(word):
             if current_state.is_final:
                 return [(current_index, current_state)], True
+            for state in current_state.transitions['-']:
+                if state.is_final:
+                    return [(current_index, state)], True
             else: return [], False
 
         if word[current_index] in self.letters:

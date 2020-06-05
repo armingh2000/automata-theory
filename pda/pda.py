@@ -26,8 +26,7 @@ class stack:
 
     def pop(self, letter):
         if letter != '-':
-            if letter != self.stack[-1]:
-                self.stack.pop(-1)
+            self.stack.pop(-1)
 
     def show(self):
         return self.stack[:]
@@ -71,10 +70,21 @@ class pda:
         self.stack.pop(transition[2])
         self.stack.push(transition[1])
 
+    def performable_transition(self, transition):
+        if self.stack.stack[-1] == transition[1] or transition[1] == '-':
+                return True
+
+        return False
+
     def walk(self, word, current_state, current_index):
         if current_index == len(word):
             if current_state.is_final:
                 return [(current_index, current_state, self.stack.show())], True
+            for transition in current_state.transitions['-']:
+                if transition[0].is_final and transition[1] == self.stack.stack[-1]:
+                    return [(current_index, transition[0], self.stack.show())], True
+            return [], False
+
         if word[current_index] in self.letters:
             if current_state.is_trap:
                 if current_state.is_final:
@@ -91,40 +101,39 @@ class pda:
                     return [], False
             
             for transition in current_state.transitions[word[current_index]]:
-                if self.stack.stack[-1] == transition[1]:
-                    self.stack.perform_transition(transition)
+                if self.performable_transition(transition):
+                    self.perform_transition(transition)
                     res = self.walk(word, transition[0], current_index + 1)
+                    self.undo_transition(transition)
                     if res[1]:
-                        return res[0].append((current_index, current_state, self.stack.show())), True
-                    else:
-                        self.undo_transition(transition)
+                        return res[0] + [(current_index, current_state, self.stack.show())], True
                 
-            for transition in current_state.transitions('-'):
-                if self.stack.stack[-1] == transition[1]:
-                    self.stack.perform_transition(transition)
+            for transition in current_state.transitions['-']:
+                if self.performable_transition(transition):
+                    self.perform_transition(transition)
                     res = self.walk(word, transition[0], current_index) 
+                    self.undo_transition(transition)
                     if res[1]:
-                        return res[0].append((current_index, current_state, self.stack.show())), True
-                    else:
-                        self.undo_transition(transition)
+                        return res[0] + [(current_index, current_state, self.stack.show())], True
 
             return [], False
 
+        return [], False
 
 def main():
-    letters = input("Enter PDA letters: ")
+    letters = input("Enter PDA letters: ").split() + ['-']
     n_states = int(input("Enter number of states: "))
     final_states = list(map(int, input("Enter final states: ").split()))
-    trap_states = list(map(int, input("Enter trap states(trap state is a state that has all letter transitions forwarding to itself: ").split()))
-    stack_variables = input("Enter stack variables: ")
+    trap_states = list(map(int, input("Enter trap states(trap state is a state that has all letter transitions forwarding to itself): ").split()))
+    stack_variables = input("Enter stack variables: ").split() + ['-']
     new_pda = pda(n_states, letters, final_states, trap_states, stack_variables)
-    n_transitions = int(input("Enter number of transitions"))
+    n_transitions = int(input("Enter number of transitions(each transition has 'one' letter):"))
     print("use - in lambda transition")
     print("Enter transitions in format: 'start_state end_state letter stack_pop_letter stack_push_letter")
     
     for i in range(n_transitions):
         temp = input("Enter transition: ").split()
-        new_pda.add_transition(self.states[int(temp[0])], self.states[int(temp[1])], temp[2], temp[3], temp[4])
+        new_pda.add_transition(new_pda.states[int(temp[0])], new_pda.states[int(temp[1])], temp[2], temp[3], temp[4])
 
     loop = True
 

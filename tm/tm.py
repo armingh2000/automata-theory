@@ -104,3 +104,40 @@ class tm:
 
 
 
+def main():
+    letters = input("Enter PDA letters: ").split()
+    n_states = int(input("Enter number of states: "))
+    final_states = list(map(int, input("Enter final states: ").split()))
+    new_tm = tm(n_states, letters, final_states)
+    n_transitions = int(input("Enter number of transitions(each transition has 'one' letter):"))
+    print("Enter transitions in format: 'start_state end_state tape_read tape_write move_direction")
+    print("Use r and l for directions")
+
+    for i in range(n_transitions):
+        temp = input("Enter transition: ").split()
+        new_tm.add_transition(new_tm.states[int(temp[0])], new_tm.states[int(temp[1])], temp[2], temp[3], temp[4])
+
+    loop = True
+
+    while loop:
+        word = input("Enter a word: ")
+        new_tm.tape.clear()
+        result = new_tm.word_check(word)
+        if result == False:
+            print("This word is NOT in this PDA's language")
+        else:
+            print("This word is in this PDA's language")
+            result.reverse()
+            print_result(result, word)
+        loop = False if input("Do you want to continue?(y, n): ") == 'n' else True
+
+def print_result(steps):
+    for step in steps:
+        index = step[0]
+        state = step[1].state_number
+        tape = step[2]
+        print("current state: q{}".format(state))
+        print("tape: {}".format(tape))
+        print((" "*(index)) + ".")
+
+main()

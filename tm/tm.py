@@ -29,7 +29,7 @@ class tape:
 
     def perform_transition(self, transition):
         self.tape[self.current_index] = transition[1]
-        self.current_index = self.current_index + 1 if transition(2) == 'r' else self.transition - 1
+        self.current_index = self.current_index + 1 if transition[2] == 'r' else self.current_index - 1
 
     def show(self):
         return self.tape[:]
@@ -61,17 +61,17 @@ class tm:
     def add_transition(self, start_state, end_state, tape_read, tape_write, move_direction):
         start_state.add_transition(end_state, tape_read, tape_write, move_direction)
 
-    def performable_transition(self, transition):
-        if self.tape.tape[self.tape.current_index] == transition[1]:
-            return True
-        return False
+   # def performable_transition(self, transition):
+   #     if self.tape.current_letter() == transition[1]:
+   #         return True
+   #     return False
 
     def perform_transition(self, transition):
         self.tape.perform_transition(transition)
 
     def undo_transition(self, transition):
         self.tape.current_index = self.tape.current_index - 1 if transition[2] == 'r' else self.tape.current_index + 1
-        self.tape[self.tape.current_index] = transition[1]
+        self.tape.tape[self.tape.current_index] = transition[1]
 
     def step(self, current_state):
         return (self.tape.current_index, current_state, self.tape.show())
@@ -87,31 +87,32 @@ class tm:
         return False
 
     def walk(self, current_state):
-        if halt_check(current_state):
+        if self.halt_check(current_state):
             if current_state.is_final:
                 return [self.step(current_state)], True
 
             return [], False
 
-        for transition in current_state.transitions[self.current_letter()]:
-            if self.performable_transition(transition):
-                self.perform_transition(transition)
-                res = self.walk(transition[0])
-                if res[1]:
-                    return res[0] + [self.step(current_state)], True
-                self.undo_transition(transition)
+        for transition in current_state.transitions[self.tape.current_letter()]:
+            #if self.performable_transition(transition):
+            self.perform_transition(transition)
+            res = self.walk(transition[0])
+            self.undo_transition(transition)
+            if res[1]:
+                return res[0] + [self.step(current_state)], True
         return [], False
 
 
 
 def main():
-    letters = input("Enter PDA letters: ").split()
+    letters = input("Enter turing machine letters: ").split() + ['#']
     n_states = int(input("Enter number of states: "))
     final_states = list(map(int, input("Enter final states: ").split()))
     new_tm = tm(n_states, letters, final_states)
     n_transitions = int(input("Enter number of transitions(each transition has 'one' letter):"))
     print("Enter transitions in format: 'start_state end_state tape_read tape_write move_direction")
     print("Use r and l for directions")
+    print("Use # for blank")
 
     for i in range(n_transitions):
         temp = input("Enter transition: ").split()
@@ -124,11 +125,12 @@ def main():
         new_tm.tape.clear()
         result = new_tm.word_check(word)
         if result == False:
-            print("This word is NOT in this PDA's language")
+            print("This word is NOT in this TM's language")
         else:
-            print("This word is in this PDA's language")
+            print("This word is in this TM's language")
             result.reverse()
-            print_result(result, word)
+            print_result(result)
+            print('end')
         loop = False if input("Do you want to continue?(y, n): ") == 'n' else True
 
 def print_result(steps):
@@ -138,6 +140,6 @@ def print_result(steps):
         tape = step[2]
         print("current state: q{}".format(state))
         print("tape: {}".format(tape))
-        print((" "*(index)) + ".")
+        print("index: {}".format(index))
 
 main()

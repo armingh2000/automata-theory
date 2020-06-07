@@ -69,9 +69,9 @@ class tm:
     def perform_transition(self, transition):
         self.tape.perform_transition(transition)
 
-    def undo_transition(self, transition):
+    def undo_transition(self, transition, letter):
         self.tape.current_index = self.tape.current_index - 1 if transition[2] == 'r' else self.tape.current_index + 1
-        self.tape.tape[self.tape.current_index] = transition[1]
+        self.tape.tape[self.tape.current_index] = letter
 
     def step(self, current_state):
         return (self.tape.current_index, current_state, self.tape.show())
@@ -94,10 +94,10 @@ class tm:
             return [], False
 
         for transition in current_state.transitions[self.tape.current_letter()]:
-            #if self.performable_transition(transition):
+            temp = self.tape.current_letter()
             self.perform_transition(transition)
             res = self.walk(transition[0])
-            self.undo_transition(transition)
+            self.undo_transition(transition, temp)
             if res[1]:
                 return res[0] + [self.step(current_state)], True
         return [], False

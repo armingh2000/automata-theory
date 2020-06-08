@@ -1,4 +1,3 @@
-
 class pda_state:
 
 
@@ -42,12 +41,12 @@ class pda:
         self.trap_states = traps
         self.stack = stack(stack_variables)
         self.states = []
-        
+
         for i in range(number_of_states):
             is_final = i in finals
             is_trap = i in traps
             self.states.append(pda_state(i, is_final, is_trap))
-    
+
         self.initiate_letters()
 
     def initiate_letters(self):
@@ -94,17 +93,17 @@ class pda:
             if current_state.is_trap:
                 if current_state.is_final:
                     res = []
-            
+
                     for i in range(current_index, len(word)):
                         res.append((i, current_state, self.stack.show()))
                         self.perform_transition(current_state.transitions[word[i]])
-                        
+
                     res.append((len(word), current_state, self.stack.show()))
                     return res, True
-               
+
                 else:
                     return [], False
-            
+
             for transition in current_state.transitions[word[current_index]]:
                 if self.performable_transition(transition):
                     self.perform_transition(transition)
@@ -112,11 +111,11 @@ class pda:
                     self.undo_transition(transition)
                     if res[1]:
                         return res[0] + [(current_index, current_state, self.stack.show())], True
-                
+
             for transition in current_state.transitions['-']:
                 if self.performable_transition(transition):
                     self.perform_transition(transition)
-                    res = self.walk(word, transition[0], current_index) 
+                    res = self.walk(word, transition[0], current_index)
                     self.undo_transition(transition)
                     if res[1]:
                         return res[0] + [(current_index, current_state, self.stack.show())], True
@@ -133,9 +132,9 @@ def main():
     stack_variables = input("Enter stack variables: ").split() + ['-']
     new_pda = pda(n_states, letters, final_states, trap_states, stack_variables)
     n_transitions = int(input("Enter number of transitions(each transition has 'one' letter):"))
-    print("use - in lambda transition")
-    print("Enter transitions in format: 'start_state end_state letter stack_pop_letter stack_push_letter")
-    
+    print("Use - in lambda transition")
+    print("Enter transitions in format: 'start_state end_state letter stack_pop_letter stack_push_letter' ")
+
     for i in range(n_transitions):
         temp = input("Enter transition: ").split()
         new_pda.add_transition(new_pda.states[int(temp[0])], new_pda.states[int(temp[1])], temp[2], temp[3], temp[4])

@@ -40,7 +40,7 @@ class tape:
 
 class tm:
 
-    
+
     def __init__(self, number_of_states, letters, finals):
         self.number_of_states = number_of_states
         self.final_states = finals
@@ -60,11 +60,6 @@ class tm:
 
     def add_transition(self, start_state, end_state, tape_read, tape_write, move_direction):
         start_state.add_transition(end_state, tape_read, tape_write, move_direction)
-
-   # def performable_transition(self, transition):
-   #     if self.tape.current_letter() == transition[1]:
-   #         return True
-   #     return False
 
     def perform_transition(self, transition):
         self.tape.perform_transition(transition)
@@ -110,7 +105,7 @@ def main():
     final_states = list(map(int, input("Enter final states: ").split()))
     new_tm = tm(n_states, letters, final_states)
     n_transitions = int(input("Enter number of transitions(each transition has 'one' letter):"))
-    print("Enter transitions in format: 'start_state end_state tape_read tape_write move_direction")
+    print("Enter transitions in format: 'start_state end_state tape_read tape_write move_direction' ")
     print("Use r and l for directions")
     print("Use # for blank")
 

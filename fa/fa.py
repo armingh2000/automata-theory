@@ -1,11 +1,11 @@
 class fa_state:
-    
+
 
     def __init__(self, state_number, is_final, is_trap):
         self.state_number = state_number
         self.is_final = is_final
         self.is_trap = is_trap
-        self.transitions = {}    
+        self.transitions = {}
 
     def add_transition(self, state2, letter):
         self.transitions[letter].append(state2)
@@ -19,7 +19,7 @@ class fa:
     def __init__(self, number_of_states, letters, finals, traps):
         self.number_of_states = number_of_states
         self.states = []
-        
+
         for i in range(number_of_states):
             is_trap = i in traps
             is_final = i in finals
@@ -79,18 +79,13 @@ def main():
     trap_states = list(map(int, input("Enter trap states(trap state is a state that has all letter transitions forwarding to itself): ").split()))
     new_fa = fa(n_states, letters, final_states, trap_states)
     n_transition = int(input("Enter number of transitions (each transition has 'one' letter): "))
-    print("use - in lambda transition")
-    print("Enter transitions in format: 'start_state end_state letter")
+    print("Use - in lambda transition")
+    print("Enter transitions in format: 'start_state end_state letter' ")
     for i in range(n_transition):
         temp = input("Enter transition: ").split()
         new_fa.add_transition(new_fa.states[int(temp[0])], new_fa.states[int(temp[1])], temp[2])
-    
+
     loop = True
-    #for state in new_fa.states:
-    #    print(state.state_number)
-    #    print(state.is_final)
-    #print(final_states)
-    #return 
     while loop:
         word = input("Enter a word: ")
         result = new_fa.word_check(word)
